@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Crear Mapa</title>
+    <link th:href="@{/styles/style.css}" rel="stylesheet" />
+
+    <style>
+      .detalle-mapa {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 8px;
+      }
+      h4 {
+        margin-bottom: 4px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h3>De click izquierdo sobre los cuadros que conformarán la pista</h3>
+
+    <div class="detalle-mapa">
+      <div>
+        <h4 id="titulo-tipo">Agregar Nuevo</h4>
+        <input type="text" placeholder="Ingresa nombre mapa" id="input-tipo" />
+      </div>
+    </div>
+
+    <div class="contenido-flex">
+      <div>
+        <div id="grid-main" class="contenido"></div>
+        <div style="background-color: rgb(18, 19, 18); border-radius: 8px">
+          <div class="contenido-flex-acciones">
+            <div class="acciones-map contenido contenido-flex">
+              <!-- <div class="btn-Acccion-"><a href="index.html">PROBAR</a></div> -->
+              <div
+                id="guardarId"
+                class="btnActionMap"
+                onclick="OnClickPint()"
+                style="background-color: rgb(54, 139, 58)"
+              >
+                Guardar
+              </div>
+              <div class="btnActionMap" onclick="limpiar(true)">Borrar</div>
+              <div>
+                <div
+                  class="btnActionMap"
+                  style="margin-bottom: 4px; background-color: rgb(45, 72, 122)"
+                >
+                  Cargar
+                </div>
+                <div
+                  class="btnActionMap"
+                  style="background-color: rgb(73, 146, 64)"
+                >
+                  Exportar
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="item-flex">
+        <h4>Pistas Guardadas</h4>
+        <div>
+          <div class="listado-pistas" id="idData-game"></div>
+        </div>
+      </div>
+    </div>
+
+    <script th:src="@{/script/data.js}"></script>
+    <script th:src="@{/script/creacionMapa.js}"></script>
+  </body>
+</html>

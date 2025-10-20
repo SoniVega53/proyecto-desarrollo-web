@@ -1,0 +1,151 @@
+h1 {
+    text-align: center;
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: 900;
+}
+
+h3 {
+    font-size: 18px;
+    font-family: 'Courier New', Courier, monospace;
+    text-align: center;
+}
+
+.contenido {
+    width: auto;
+    display: grid;
+    grid-template-columns: repeat(3, 70px);
+    gap: 8px;
+}
+
+.item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 70px;
+    height: 70px;
+    background-color: rgb(33, 33, 34);
+    border-radius: 8px;
+}
+
+.contenido-flex {
+    display: flex;
+    justify-content: center;
+}
+
+.item-flex {
+    width: 300px !important;
+    max-height: 620px;
+    margin-left: 4px;
+    padding: 4px;
+    background-color: rgb(33, 33, 34);
+    color: white;
+    border-radius: 8px;
+    overflow-y: auto;
+}
+
+.item-flex h4 {
+    text-align: center;
+    margin: 4px;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.acciones,
+.acciones-conf,
+.acciones-map {
+    display: grid;
+    grid-template-columns: repeat(4, 50px);
+    gap: 8px;
+    width: auto;
+    height: auto;
+    color: white;
+    border-radius: 8px;
+}
+
+.acciones-conf {
+    grid-template-columns: repeat(3, 50px);
+}
+
+.acciones-map {
+    grid-template-columns: repeat(3, 100px);
+    align-items: center;
+}
+
+.btn-Acccion {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgb(52, 51, 122);
+    width: 50px;
+    height: 50px;
+    border-radius: 50px;
+}
+
+.btn-Acccion svg,
+a {
+    width: 20px;
+    height: 20px;
+    fill: white;
+}
+
+
+.contenido-flex-acciones {
+    margin-top: 16px;
+    padding: 10px 0;
+    display: flex;
+    justify-content: center;
+}
+
+.item-robot {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgb(61, 58, 223);
+    color: white;
+    width: 80%;
+    height: 80%;
+    border-radius: 50px;
+}
+
+.icon-text {
+    display: flex;
+    margin: 4px;
+}
+
+.btn-acccion-text {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgb(52, 51, 122);
+    width: 50px;
+    height: 50px;
+    border-radius: 50px;
+}
+
+.btn-acccion-textsvg {
+    width: 20px;
+    height: 20px;
+    fill: white;
+}
+
+.button-ejec p {
+    margin: 0;
+    font-size: 12px;
+    text-align: center;
+}
+
+.btnActionMap {
+    cursor: pointer;
+    background-color: rgb(114, 58, 49);
+    padding: 8px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.listado-pistas{
+    cursor: pointer;
+}
+
+.select-item{
+    background-color: rgb(77, 85, 85);
+    padding: 4px;
+}
