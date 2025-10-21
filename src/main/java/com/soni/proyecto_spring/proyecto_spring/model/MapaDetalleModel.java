@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class MapaDetalleModel {
-    private Long idMapa;
+    //private MapaEntity mapa;
 
     private int key;
     private int value;

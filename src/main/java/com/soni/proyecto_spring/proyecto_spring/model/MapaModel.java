@@ -1,7 +1,5 @@
 package com.soni.proyecto_spring.proyecto_spring.model;
 
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,8 +9,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class MapaActualizarModel {
+public class MapaModel {
 
-    private MapaModel mapa;
-    private List<MapaDetalleModel> detalles;
+    private Long idMapa;
+    private String nombreMapa;
 }

@@ -1,9 +1,9 @@
-INSERT INTO usuarios (nombre, correo, password) VALUES ('admin', 'admin@gmail.com', '123456');
+INSERT INTO usuarios (nombre, correo, password,rol) VALUES ('admin', 'admin@gmail.com', '$2a$10$JiHLWWlSTa/Djt8LHhli5eUwvMC8dShxu39HAcfPOYBkdLW1D5W5C','ADMIN');
 
-INSERT INTO mapas (nombre_mapa) VALUES
-('Mapa 1'),
-('Mapa 2'),
-('Mapa 3');
+INSERT INTO mapas (id_usuario, nombre_mapa) VALUES
+(1, 'Mapa 1'),
+(1, 'Mapa 2'),
+(1, 'Mapa 3');
 
 -- Mapa 1
 INSERT INTO mapa_detalle (id_mapa, celda_key, celda_value, tipo, value_main, estatus, start) VALUES

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Login</title>
+    <link th:href="@{/styles/login.css}" rel="stylesheet" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Iniciar Sesión</h1>
+
+      <form id="loginForm">
+        <div class="form-group">
+          <label for="correo">Correo</label>
+          <input
+            type="text"
+            id="correo"
+            name="correo"
+            required
+            placeholder="ejemplo@correo.com"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="password">Contraseña</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            required
+            placeholder="••••••••"
+          />
+        </div>
+
+        <button type="submit">Entrar</button>
+      </form>
+
+      <div id="mensaje" class="alert" style="display: none"></div>
+    </div>
+
+    <script>
+      const form = document.getElementById("loginForm");
+      const mensaje = document.getElementById("mensaje");
+
+      validarToken().then((isValid) => {
+        if (isValid) {
+          window.location.href = "/crear-mapa";
+        } 
+      });
+
+      async function validarToken() {
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+          console.log("No hay token guardado");
+          return false;
+        }
+
+        const params = new URLSearchParams();
+        params.append("token", token);
+
+        try {
+          const response = await fetch("/api/auth/validar-token", {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: params,
+          });
+
+          if (!response.ok) {
+            const error = await response.text();
+            console.log(error);
+            return false;
+          }
+
+          const data = await response.text();
+          console.log(data); // "Token válido"
+          return true;
+        } catch (err) {
+          console.error("Error al validar token:", err);
+          return false;
+        }
+      }
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        // Crear FormData desde el formulario
+        const formData = new FormData(form);
+        const params = new URLSearchParams(formData);
+
+        try {
+          const response = await fetch("/api/auth/login", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded",
+            },
+            body: params,
+          });
+
+          const data = await response.json();
+
+          if (!response.ok) {
+            throw new Error(data.error || "Credenciales inválidas");
+          }
+
+          mensaje.style.display = "block";
+          mensaje.textContent = "Inicio de sesión exitoso";
+          mensaje.className = "alert success";
+
+          localStorage.setItem("token", data.token);
+
+          window.location.href = "/crear-mapa";
+        } catch (err) {
+          mensaje.style.display = "block";
+          mensaje.textContent = err.message;
+          mensaje.className = "alert error";
+        }
+      });
+    </script>
+  </body>
+</html>

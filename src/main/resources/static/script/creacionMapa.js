@@ -17,11 +17,10 @@ const Direccion = {
   OESTE: "O",
 };
 
-let itemsArray = [0, 1, 2, 3, 4, 5];
+let itemsArray = 6;
 let itemsAddArray = []; //para instrucciones de pasos
 let caminoArray = []; // camino pintado
-let caminoArraysMapas = []; //array de informacion
-let mapasArray = [];
+let mapas = []; //array de informacion
 let pasoSelect;
 let itemRobot = {
   num: 0,
@@ -30,39 +29,54 @@ let itemRobot = {
 let hayError = false;
 let selectMapa = "";
 let selectDataMapa = null;
+const token = localStorage.getItem("token");
 
 const existePaso = (paso) => {
   return caminoArray.find((res) => res.key === paso);
 };
-
-async function pasosMapa(idmapa) {
-  const res = await fetch(`/api/mapas/${idmapa}/detalles`);
-  if (!res.ok) throw new Error("Error obteniendo pasos del mapa");
-  const pasosMapa = await res.json();
-  caminoArraysMapas.push({ idMapa: idmapa, lista: pasosMapa });
-}
-
-buscarMapas();
+validarToken().then((isValid) => {
+  if (!isValid) {
+    window.location.href = "/login";
+  } else {
+    buscarMapas();
+  }
+});
 
 async function buscarMapas() {
-  const res = await fetch(`/api/mapas`);
+  const res = await fetch(`/api/mapas`, {
+    method: "GET",
+    headers: {
+      Authorization: "Bearer " + token,
+    },
+  });
   if (!res.ok) throw new Error("Mapas no encontrados");
 
-  mapasArray = await res.json();
+  mapas = await res.json();
 
-  // Esperar a que terminen todos los pasos
-  await Promise.all(mapasArray.map((mapa) => pasosMapa(mapa.idMapa)));
-
-  console.log("Todos los mapas cargados:", mapasArray);
+  console.log("Todos los mapas cargados:", mapas);
   init();
 }
 
-async function init() {
-  for (let index = 0; index < itemsArray.length; index++) {
-    let element =
-      index === 0 ? "START" : index === itemsArray.length - 1 ? "END" : "";
+async function buscarMapaById(idMapa) {
+  const res = await fetch(`/api/mapas/detalles/${idMapa}`, {
+    method: "GET",
+    headers: {
+      Authorization: "Bearer " + token,
+    },
+  });
+  if (!res.ok) throw new Error("Mapas no encontrados");
+  const caminSelect = await res.json();
 
-    for (let indexFila = 0; indexFila < itemsArray.length; indexFila++) {
+  console.log(caminSelect);
+
+  caminoArray = caminSelect.detalles;
+}
+
+async function init() {
+  for (let index = 0; index < itemsArray; index++) {
+    let element = index === 0 ? "START" : index === itemsArray - 1 ? "END" : "";
+
+    for (let indexFila = 0; indexFila < itemsArray; indexFila++) {
       const item = {
         key: itemsAddArray.length + 1,
         value: indexFila,
@@ -80,7 +94,7 @@ async function init() {
             : element === "END"
             ? Position.BOTTOM_LEFT
             : Position.LEFT;
-      } else if (indexFila === itemsArray.length - 1) {
+      } else if (indexFila === itemsArray - 1) {
         item.tipo =
           element === "START"
             ? Position.TOP_RIGHT
@@ -91,7 +105,7 @@ async function init() {
         item.tipo =
           index === 0
             ? Position.TOP
-            : index === itemsArray.length - 1
+            : index === itemsArray - 1
             ? Position.BOTTOM
             : Position.CENTER;
       }
@@ -101,12 +115,11 @@ async function init() {
   }
 
   const grid = document.getElementById("grid-main");
-  grid.style.gridTemplateColumns = `repeat(${itemsArray.length}, 70px)`;
+  grid.style.gridTemplateColumns = `repeat(${itemsArray}, 70px)`;
 
-  itemsAddArray.map((res, index) => {
+  itemsAddArray.forEach((res, index) => {
     res.start = index === 0;
     const pasoItem = existePaso(res.key);
-    console.log(pasoItem);
     if (pasoItem) {
       res.estatus = pasoItem.estatus;
       res.start = pasoItem.start;
@@ -127,7 +140,6 @@ async function init() {
 
     nuevoDiv.addEventListener("click", function () {
       eventPintarCamino(res, nuevoDiv);
-      // console.log("CLICK: ", caminoArraysMapas);
     });
 
     grid.appendChild(nuevoDiv);
@@ -136,57 +148,40 @@ async function init() {
   accionMenuLateral();
 }
 
-function accionMenuLateral() {
-  //Manejo Menu Lateral
-  const lateral = document.getElementById("idData-game");
-  mapasArray?.map((mapa, index) => {
-    //const mapa = mapasArray.find(res => mapa.idMapa == resAll.idMapa);
-    const p = document.createElement("p");
-    p.id = `item${mapa.idMapa}`;
-    p.textContent = mapa?.nombreMapa;
+async function validarToken() {
+  const token = localStorage.getItem("token");
 
-    if (selectMapa === p.id) {
-      p.classList.add("select-item");
-    }
-    console.log("ARRAY: ", caminoArraysMapas)
+  if (!token) {
+    console.log("No hay token guardado");
+    return false;
+  }
 
-    p.addEventListener("click", function () {
-      if (selectMapa === p.id) {
-        limpiar(true);
-        return;
-      }
-      selectMapa = p.id;
-      selectDataMapa = mapa;
-      const btnGuardar = document.getElementById("guardarId");
-      btnGuardar.textContent = selectMapa ? "Actualizar" : "Guardar";
+  const params = new URLSearchParams();
+  params.append("token", token);
 
-      const input = document.getElementById("input-tipo");
-      const titulo = document.getElementById("titulo-tipo");
-      input.value = mapa?.nombreMapa || "";
-      titulo.textContent = !selectMapa ? "Agregar Nuevo" : "Actualizar Mapa";
-
-      limpiar(false);
-      const resAll = caminoArraysMapas.find((res) => res.idMapa == mapa.idMapa);
-      console.log(caminoArraysMapas);
-      resAll.lista.map((res) => {
-        const nuevoDiv = document.getElementById(`item-${res.key}`);
-        if (nuevoDiv) {
-          nuevoDiv.style.backgroundColor =
-            res.estatus == -1
-              ? "rgb(18, 19, 18)"
-              : res.estatus == 0
-              ? "rgb(12, 160, 12)"
-              : "rgb(187, 17, 17)";
-          eventPintarCamino(res, nuevoDiv);
-        }
-      });
-      p.style.backgroundColor = "rgb(12, 160, 12)";
+  try {
+    const response = await fetch("/api/auth/validar-token", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: params,
     });
-    lateral.appendChild(p);
-  });
+
+    if (!response.ok) {
+      const error = await response.text();
+      console.log(error);
+      return false;
+    }
+
+    const data = await response.text();
+    console.log(data); // "Token válido"
+    return true;
+  } catch (err) {
+    console.error("Error al validar token:", err);
+    return false;
+  }
 }
 
-const eventPintarCamino = (res, nuevoDiv, cargar) => {
+function eventPintarCamino(res, nuevoDiv, cargar) {
   if (caminoArray.length == 0) {
     res.start = true;
   }
@@ -197,13 +192,6 @@ const eventPintarCamino = (res, nuevoDiv, cargar) => {
   if (!pasoItem || pasoSelect.estatus == 1) {
     pasoSelect.estatus = estatus;
     res.estatus = estatus;
-    const resAll = caminoArraysMapas.find(
-      (res) => res.idMapa == selectDataMapa?.idMapa
-    );
-    // if (resAll) {
-    //   resAll.lista = caminoArray;
-    //   console.log("LISTA:",resAll.lista)
-    // }
     nuevoDiv.style.backgroundColor =
       estatus == 0 ? "rgb(12, 160, 12)" : "rgb(187, 17, 17)";
 
@@ -212,14 +200,14 @@ const eventPintarCamino = (res, nuevoDiv, cargar) => {
       caminoArray.push(res);
     }
   }
-};
+}
 
 const hayErrorPasos = () => {
   return caminoArray.some((res) => res.estatus == 1);
 };
 
-const esPasoValido = (keyMain) => {
-  const length = itemsArray.length;
+function esPasoValido(keyMain) {
+  const length = itemsArray;
   if (caminoArray.length > 0 && pasoSelect.key !== keyMain) {
     if (pasoSelect.tipo === Position.CENTER) {
       return (
@@ -293,9 +281,9 @@ const esPasoValido = (keyMain) => {
     return false;
   }
   return false;
-};
+}
 
-const validarError = () => {
+function validarError() {
   if (caminoArray.length <= 0) return true;
   for (const res of caminoArray) {
     if (esPasoValido(res.key) && res.estatus === 0) {
@@ -303,60 +291,10 @@ const validarError = () => {
     }
   }
   return false;
-};
-
-Onclick = () => {
-  console.log(caminoArray, " ", hayError);
-};
-
-OnButtonAccion = (direccion) => {
-  console.log(direccion);
-  const start = itemRobot.direccion;
-  const robotDiv = document.getElementById("id-robot");
-
-  let num = 0;
-  if (direccion === "izq") {
-    num = itemRobot.num === 0 ? 4 : itemRobot.num;
-
-    if (num > 0) {
-      num--;
-    }
-    itemRobot.num = num;
-    robotDiv.textContent = itemRobot.num;
-  } else if (direccion === "der") {
-    num = itemRobot.num === 3 ? -1 : itemRobot.num;
-    if (num < 4) {
-      num++;
-    }
-    itemRobot.num = num;
-    robotDiv.textContent = itemRobot.num;
-  } else if (direccion === "ace") {
-    const divElementAntes = document.getElementById(
-      `item-${itemRobot.pasoKey}`
-    );
-
-    const pasoSiguiente = direccionMo();
-    console.log(itemRobot.pasoKey);
-    console.log(pasoSiguiente);
-
-    if (pasoSiguiente > 0 && pasoSiguiente <= itemsArray.length) {
-      const divElementSiguiente = document.getElementById(
-        `item-${pasoSiguiente}`
-      );
-      const robotAce = document.createElement("div");
-      robotAce.classList.add("item-robot");
-      robotAce.id = `id-robot`;
-      robotAce.textContent = itemRobot.num;
-
-      itemRobot.pasoKey = pasoSiguiente;
-      divElementAntes.removeChild(robotDiv);
-      divElementSiguiente.appendChild(robotAce);
-    }
-  }
-};
+}
 
 const direccionMo = () => {
-  const length = itemsArray.length;
+  const length = itemsArray;
   return itemRobot.num == 0
     ? itemRobot.pasoKey - length // arriba
     : itemRobot.num == 1
@@ -368,12 +306,15 @@ const direccionMo = () => {
 
 OnClickPint = () => {
   if (caminoArray.length > 0) {
-    console.log(caminoArray);
-    // const caminoFind = localStorage.getItem("caminos");
-    //caminoArrayAll = caminoFind ? JSON.parse(caminoFind) : [];
     const input = document.getElementById("input-tipo");
     if (!input.value) {
       alert("Falta Nombre");
+      return;
+    }
+
+    const hayError = caminoArray.some((res) => res.estatus === 1);
+    if (hayError) {
+      alert("Solucione los errores, antes de continuar");
       return;
     }
 
@@ -387,28 +328,42 @@ OnClickPint = () => {
 
     if (selectMapa) {
       data.mapa.idMapa = selectDataMapa?.idMapa;
-      selectDataMapa.nombreMapa = input.value;
-      const resAll = caminoArraysMapas.find(
-        (res) => res.idMapa == selectDataMapa?.idMapa
-      );
-      resAll.lista = caminoArray;
-      // const num = selectMapa.replace("item", "");
-      // caminoArrayAll[num - 1] = caminoArray;
+
+      const mapa = mapas.find((res) => res.idMapa === selectDataMapa?.idMapa);
+      mapa.nombreMapa = input.value;
     }
-    //else {
-    //   caminoArrayAll.push(caminoArray,selectMapa);
-    // }
+
     guardarMapa(data);
-    //localStorage.setItem("caminos", JSON.stringify(caminoArrayAll));
   } else {
     alert("No hay Camino");
   }
 };
 
+function obtenerSubDelToken() {
+  const token = localStorage.getItem("token");
+  if (!token) return null;
+
+  try {
+    const payloadBase64 = token.split(".")[1];
+    const payloadBase64Standard = payloadBase64
+      .replace(/-/g, "+")
+      .replace(/_/g, "/");
+    const payloadJson = JSON.parse(atob(payloadBase64Standard));
+    return payloadJson.sub || null;
+  } catch (err) {
+    console.error("Error al decodificar el token:", err);
+    return null;
+  }
+}
+
 async function guardarMapa(data) {
-  const res = await fetch("/api/mapas", {
+  const usuario = obtenerSubDelToken();
+  const res = await fetch(`/api/mapas/${usuario}`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + token,
+    },
     body: JSON.stringify(data),
   });
 
@@ -417,30 +372,16 @@ async function guardarMapa(data) {
     alert("Se Actualizo correctamente");
   } else {
     const newMapa = await res.json();
-    console.log(newMapa);
 
-    mapasArray.push(newMapa);
-    caminoArraysMapas.push({ idMapa: newMapa.idMapa, lista: caminoArray });
+    mapas.push(newMapa);
+
     alert("Se Guardo correctamente");
   }
 
   limpiar(true);
 }
 
-async function eliminarMapa(id) {
-  if (!confirm("¿Seguro que deseas eliminar este mapa?")) return;
-
-  const res = await fetch(`/api/mapas/${id}`, { method: "DELETE" });
-
-  if (!res.ok) {
-    alert("Ocurrió un error al eliminar el mapa");
-    return;
-  }
-
-  alert("Mapa eliminado correctamente");
-}
-
-limpiar = (todo) => {
+async function limpiar(todo) {
   if (todo) {
     selectMapa = "";
     const btnGuardar = document.getElementById("guardarId");
@@ -454,9 +395,100 @@ limpiar = (todo) => {
 
   const grid = document.getElementById("grid-main");
   grid.replaceChildren();
+
   caminoArray = [];
   itemsAddArray = [];
   const lateral = document.getElementById("idData-game");
   lateral.replaceChildren();
   init();
+}
+
+function accionMenuLateral() {
+  // Manejo del menú lateral
+  const lateral = document.getElementById("idData-game");
+  lateral.replaceChildren();
+
+  mapas?.forEach((mapa, index) => {
+    const contenedor = document.createElement("div");
+    contenedor.id = `contenedor-${mapa.idMapa}`;
+    contenedor.classList.add("item-mapa-lateral");
+
+    const p = document.createElement("p");
+    p.id = `item${mapa.idMapa}`;
+    p.textContent = mapa?.nombreMapa;
+    if (selectMapa === contenedor.id) contenedor.classList.add("select-item");
+
+    const btnEliminar = document.createElement("button");
+    btnEliminar.textContent = "🗑";
+    btnEliminar.classList.add("btn-eliminar");
+    btnEliminar.addEventListener("click", async (ev) => {
+      ev.stopPropagation(); // evita activar el click del mapa
+      await eliminarMapa(mapa.idMapa);
+    });
+
+    contenedor.onclick = async function (ev) {
+      if (selectMapa === contenedor.id) {
+        limpiar(true);
+        return;
+      }
+
+      selectMapa = contenedor.id;
+      selectDataMapa = mapa;
+      const btnGuardar = document.getElementById("guardarId");
+      btnGuardar.textContent = selectMapa ? "Actualizar" : "Guardar";
+
+      const input = document.getElementById("input-tipo");
+      const titulo = document.getElementById("titulo-tipo");
+      input.value = selectDataMapa?.nombreMapa || "";
+      titulo.textContent = !selectMapa ? "Agregar Nuevo" : "Actualizar Mapa";
+
+      limpiar(false);
+      await buscarMapaById(mapa.idMapa);
+      caminoArray.forEach((res) => {
+        const nuevoDiv = document.getElementById(`item-${res.key}`);
+        if (nuevoDiv) {
+          nuevoDiv.style.backgroundColor =
+            res.estatus == -1
+              ? "rgb(18, 19, 18)"
+              : res.estatus == 0
+              ? "rgb(12, 160, 12)"
+              : "rgb(187, 17, 17)";
+          eventPintarCamino(res, nuevoDiv);
+        }
+      });
+      p.style.backgroundColor = "rgb(12, 160, 12)";
+    };
+
+    contenedor.appendChild(p);
+    contenedor.appendChild(btnEliminar);
+    lateral.appendChild(contenedor);
+  });
+}
+
+async function eliminarMapa(id) {
+  if (!confirm("¿Seguro que deseas eliminar este mapa?")) return;
+
+  try {
+    const res = await fetch(`/api/mapas/${id}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: "Bearer " + token,
+      },
+    });
+    if (!res.ok) throw new Error("Error eliminando el mapa");
+
+    mapas = mapas.filter((res) => res.idMapa !== id);
+
+    limpiar(true);
+
+    alert("Mapa eliminado correctamente");
+  } catch (err) {
+    alert("Ocurrió un error al eliminar el mapa");
+    console.error(err);
+  }
+}
+
+onClickLoggout = () => {
+  localStorage.removeItem("token");
+  window.location.href = "/";
 };

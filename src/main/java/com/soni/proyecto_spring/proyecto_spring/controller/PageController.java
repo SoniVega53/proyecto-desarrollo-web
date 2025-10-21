@@ -15,4 +15,9 @@ public class PageController {
     public String mostrarCrearMapa() {
         return "crearMapa";
     }
+
+    @GetMapping("/login")
+    public String login() {
+        return "login";
+    }
 }

@@ -45,7 +45,7 @@ const direccionVisual = () => {
 buscarMapas();
 
 async function buscarMapas() {
-  const res = await fetch(`/api/mapas/aletorioMapa`);
+  const res = await fetch(`/api/auth/aletorioMapa`);
   if (!res.ok) throw new Error("Mapas no encontrados");
 
   const camino = await res.json();

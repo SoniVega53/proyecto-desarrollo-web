@@ -4,13 +4,17 @@ CREATE TABLE IF NOT EXISTS usuarios (
     nombre VARCHAR(100) NOT NULL,
     correo VARCHAR(150) UNIQUE NOT NULL,
     password VARCHAR(255) NOT NULL,
+    rol VARCHAR(150) NOT NULL,
     fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS mapas (
     id_mapa INT AUTO_INCREMENT PRIMARY KEY,
+    id_usuario INT NOT NULL,
     nombre_mapa VARCHAR(100) NOT NULL,
-    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario) 
+        ON DELETE CASCADE 
 );
 
 CREATE TABLE IF NOT EXISTS mapa_detalle (

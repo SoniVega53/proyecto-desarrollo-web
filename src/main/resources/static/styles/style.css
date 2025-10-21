@@ -146,6 +146,36 @@ a {
 }
 
 .select-item{
-    background-color: rgb(77, 85, 85);
-    padding: 4px;
+    background: #333 !important;
+}
+
+
+.item-mapa-lateral {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #1f1f1f;
+  color: white;
+  padding: 6px 8px;
+  margin: 4px 0;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.item-mapa-lateral:hover {
+  background: #333;
+}
+
+.btn-eliminar {
+  background: #c22;
+  border: none;
+  color: white;
+  font-weight: bold;
+  border-radius: 4px;
+  padding: 2px 6px;
+  cursor: pointer;
+}
+
+.btn-eliminar:hover {
+  background: #f55;
 }
