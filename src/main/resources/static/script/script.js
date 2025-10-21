@@ -51,7 +51,7 @@ async function buscarMapas() {
   const camino = await res.json();
 
   caminoArray = camino;
-  console.log(camino)
+  console.log(camino);
   init();
 }
 
@@ -124,6 +124,10 @@ async function init() {
     //     eventPintarCamino(res, nuevoDiv);
     //     // console.log("CLICk", res)
     // });
+    if (caminoArray[caminoArray.length - 1].key === res.key) {
+      nuevoDiv.style.background =
+        "linear-gradient(102deg,#121111 0%, #78847c 40%, #737b73 80%)";
+    }
 
     if (res.start) {
       const robotDiv = document.createElement("div");
@@ -464,6 +468,12 @@ async function reiniciar() {
     robotAce.id = `id-robot`;
     robotAce.textContent = direccionVisual();
     divElementSiguiente.appendChild(robotAce);
+
+    const metaDiv = document.getElementById(
+      `item-${caminoArray[caminoArray.length - 1].key}`
+    );
+    metaDiv.style.background =
+      "linear-gradient(102deg,#121111 0%, #78847c 40%, #737b73 80%)";
   }
   start = false;
   perdio = false;

@@ -20,10 +20,14 @@
         align-items: center;
         justify-content: center;
       }
+      h1 {
+        text-align: center;
+      }
     </style>
   </head>
 
   <body>
+    <h1 id="id-title"></h1>
     <!-- resto de tu contenido... -->
     <div style="display: flex; justify-content: flex-end; padding: 8px">
       <button
@@ -39,6 +43,27 @@
       >
         Cerrar sesión
       </button>
+    </div>
+    <div
+      style="display: flex; justify-content: flex-end; padding: 8px"
+      id="btn-admin"
+    >
+      <div>
+        <a href="/admin" style="background-color: rgb(67, 72, 87)">
+          <button
+            style="
+              background-color: #205368;
+              color: white;
+              border: none;
+              padding: 6px 12px;
+              border-radius: 4px;
+              cursor: pointer;
+            "
+          >
+            Administración
+          </button>
+        </a>
+      </div>
     </div>
     <h3>De click izquierdo sobre los cuadros que conformarán la pista</h3>
 

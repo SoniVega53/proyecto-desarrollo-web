@@ -38,6 +38,11 @@ validarToken().then((isValid) => {
   if (!isValid) {
     window.location.href = "/login";
   } else {
+    const user = obtenerSubDelToken();
+    if (user.rol === "USER") {
+      document.getElementById("btn-admin").style.display = "none";
+    }
+    document.getElementById("id-title").textContent = `Bienvenido ${user.sub}`;
     buscarMapas();
   }
 });
@@ -349,7 +354,7 @@ function obtenerSubDelToken() {
       .replace(/-/g, "+")
       .replace(/_/g, "/");
     const payloadJson = JSON.parse(atob(payloadBase64Standard));
-    return payloadJson.sub || null;
+    return payloadJson || null;
   } catch (err) {
     console.error("Error al decodificar el token:", err);
     return null;
@@ -357,7 +362,7 @@ function obtenerSubDelToken() {
 }
 
 async function guardarMapa(data) {
-  const usuario = obtenerSubDelToken();
+  const usuario = obtenerSubDelToken().sub;
   const res = await fetch(`/api/mapas/${usuario}`, {
     method: "POST",
     headers: {

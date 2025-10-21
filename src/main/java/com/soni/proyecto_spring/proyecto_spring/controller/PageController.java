@@ -10,6 +10,10 @@ public class PageController {
     public String homeMapa() {
         return "homeMapa";
     }
+    @GetMapping("/admin")
+    public String administrador() {
+        return "administrador";
+    }
 
     @GetMapping("/crear-mapa")
     public String mostrarCrearMapa() {

@@ -20,6 +20,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Random;
 
 @RestController
@@ -53,6 +54,12 @@ public class AuthController {
         usuario.setFechaCreacion(LocalDateTime.now());
         usuarioRepository.save(usuario);
         return "Usuario registrado correctamente";
+    }
+
+    @GetMapping("/{id}")
+    public UsuarioEntity getUsuarioById(@PathVariable Long id) {
+        Optional<UsuarioEntity> usuario = usuarioRepository.findById(id);
+        return usuario.orElse(null);
     }
 
     @PostMapping("/login")

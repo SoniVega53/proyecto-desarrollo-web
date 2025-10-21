@@ -25,7 +25,7 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/**", "/css/**", "/js/**", "/images/**", "/api/auth/**").permitAll()
-                        .requestMatchers("/crear-mapa", "/api/mapas/**").authenticated()
+                        .requestMatchers("/crear-mapa", "/api/mapas/**","/api/usuarios/**").authenticated()
                         .anyRequest().authenticated())
                 .formLogin(form -> form
                         .loginPage("/login")

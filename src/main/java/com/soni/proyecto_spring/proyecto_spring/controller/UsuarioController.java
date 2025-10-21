@@ -28,12 +28,6 @@ public class UsuarioController {
         return usuarioRepository.findAll();
     }
 
-    @GetMapping("/{id}")
-    public UsuarioEntity getUsuarioById(@PathVariable Long id) {
-        Optional<UsuarioEntity> usuario = usuarioRepository.findById(id);
-        return usuario.orElse(null); // Puedes lanzar excepción personalizada si quieres
-    }
-
     @PostMapping
     public UsuarioEntity createUsuario(@RequestBody UsuarioEntity usuario) {
         return usuarioRepository.save(usuario);
@@ -45,8 +39,9 @@ public class UsuarioController {
             usuario.setNombre(usuarioDetails.getNombre());
             usuario.setCorreo(usuarioDetails.getCorreo());
             usuario.setPassword(usuarioDetails.getPassword());
+            usuario.setRol(usuarioDetails.getRol());
             return usuarioRepository.save(usuario);
-        }).orElse(null); // Puedes lanzar excepción si no existe
+        }).orElse(null); 
     }
 
     @DeleteMapping("/{id}")

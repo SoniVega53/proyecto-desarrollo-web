@@ -37,7 +37,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         } else {
             String path = request.getRequestURI();
 
-            if (path.startsWith("/api/mapas/")) {
+            if (path.startsWith("/api/mapas/") || path.startsWith("/api/usuarios")) {
                 String authHeader = request.getHeader("Authorization");
 
                 if (authHeader == null || !authHeader.startsWith("Bearer ")) {
