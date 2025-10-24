@@ -42,8 +42,7 @@ public class AuthController {
     @PostMapping("/validar-token")
     public ResponseEntity<?> validarToken(@RequestParam String token) {
         if (!jwtProvider.isTokenValid(token)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body("Token inválido o expirado");
+            return ResponseEntity.ok("Token válido");
         }
         return ResponseEntity.ok("Token válido");
     }
@@ -103,4 +102,5 @@ public class AuthController {
 
         return seListadoPa;
     }
+
 }

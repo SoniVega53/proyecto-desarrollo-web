@@ -61,6 +61,7 @@ async function validarToken() {
     return true;
   } catch (err) {
     console.error("Error al validar token:", err);
+    localStorage.setItem("token", '');
     return false;
   }
 }
@@ -88,6 +89,10 @@ async function listarUsuarios() {
                     <button onclick="actualizarUsuario(${u.idUsuario})"
                         style="background-color: #22577aff; color: white; border: none; padding: 4px 8px; cursor: pointer;">
                         Actualizar
+                    </button>
+                    <button onclick="actualizarPassword(${u.idUsuario})" id="openModalBtn"
+                        style="background-color: #1f4b68ff; color: white; border: none; padding: 4px 8px; cursor: pointer;">
+                        Actualizar Contraseña
                     </button>
                 </td>
             `;
@@ -255,3 +260,52 @@ onClickLoggout = () => {
   localStorage.removeItem("token");
   window.location.href = "/";
 };
+
+
+const modal = document.getElementById('passwordModal');
+actualizarPassword = () => {
+  modal.style.display = 'block'
+}
+
+closeModalBtn = () => {
+  modal.style.display = 'none'
+}
+
+// Actualizar contraseña
+window.onclick = e => { if(e.target===modal) modal.style.display='none'; }
+
+// Actualizar contraseña (estilo fetch DELETE)
+document.getElementById('updatePasswordBtn').addEventListener('click', async () => {
+    const password = document.getElementById('passwordOld');
+    const passwordChange = document.getElementById('passwordChange');
+
+    if (!password.value || !passwordChange.value) {
+        alert("Todos los campos son obligatorios");
+        return;
+    }
+
+    if(!confirm("¿Seguro que deseas cambiar la contraseña?")) return;
+
+    try {
+        const res = await fetch(`/api/usuarios/updatePassword/${encodeURIComponent(usuario.sub)}/${encodeURIComponent(password.value)}/${encodeURIComponent(passwordChange.value)}`, {
+            method: "POST",
+            headers: {
+              Authorization: "Bearer " + token,
+            },
+        });
+
+        if (!res.ok) {
+            const text = await res.text();
+            alert("Error: " + text);
+            console.error("Error al actualizar contraseña:", text);
+        } else {
+            alert("Contraseña actualizada correctamente");
+            modal.style.display = 'none';
+            password.value = "";
+            passwordChange.value = "";
+        }
+    } catch (err) {
+        console.error("Error al actualizar contraseña:", err.error);
+        alert("Error de conexión con el servidor");
+    }
+});

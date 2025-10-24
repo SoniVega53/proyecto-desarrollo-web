@@ -39,8 +39,10 @@ validarToken().then((isValid) => {
     window.location.href = "/login";
   } else {
     const user = obtenerSubDelToken();
-    if (user.rol === "USER") {
-      document.getElementById("btn-admin").style.display = "none";
+    
+    if (user.role === "ADMIN") {
+      const btnAdmin = document.getElementById("btn-admin");
+      if (btnAdmin) btnAdmin.style.display = "inline";
     }
     document.getElementById("id-title").textContent = `Bienvenido ${user.sub}`;
     buscarMapas();
@@ -373,11 +375,14 @@ async function guardarMapa(data) {
   });
 
   if (!res.ok) throw new Error("Error guardando el mapa");
-  if (data.mapa.idMapa) {
+
+  const exitemapa = mapas.some((res) => res.idMapa == data.mapa.idMapa);
+
+  if (data.mapa.idMapa && exitemapa) {
     alert("Se Actualizo correctamente");
   } else {
     const newMapa = await res.json();
-
+    console.log(newMapa);
     mapas.push(newMapa);
 
     alert("Se Guardo correctamente");
@@ -496,4 +501,84 @@ async function eliminarMapa(id) {
 onClickLoggout = () => {
   localStorage.removeItem("token");
   window.location.href = "/";
+};
+
+exportar = () => {
+  if (caminoArray.length > 0) {
+    const input = document.getElementById("input-tipo");
+    if (!input.value) {
+      alert("Falta Nombre");
+      return;
+    }
+
+    const hayError = caminoArray.some((res) => res.estatus === 1);
+    if (hayError) {
+      alert("Solucione los errores, antes de continuar");
+      return;
+    }
+    let data = {
+      mapa: {
+        idMapa: null,
+        nombreMapa: input.value || "",
+      },
+      detalles: caminoArray,
+    };
+    if (selectMapa) {
+      data.mapa.idMapa = selectDataMapa?.idMapa;
+    }
+
+    const jsonString = JSON.stringify(data, null, 2);
+    const blob = new Blob([jsonString], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "mapa.json";
+    a.click();
+
+    URL.revokeObjectURL(url);
+  } else {
+    alert("No hay Camino");
+  }
+};
+
+cargar = () => {
+  const input = document.createElement("input");
+  input.type = "file";
+  input.accept = ".json";
+  input.style.display = "none";
+
+  input.addEventListener("change", (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const content = e.target.result.trim();
+
+      if (!content) {
+        alert("⚠️ El archivo está vacío.");
+        return;
+      }
+      try {
+        const jsonData = JSON.parse(content);
+
+        let data = {
+          mapa: jsonData.mapa,
+          detalles: jsonData.detalles,
+        };
+        console.log(data);
+        //output.textContent = JSON.stringify(jsonData, null, 2);
+        guardarMapa(data);
+      } catch (error) {
+        console.log(error);
+        alert("El archivo seleccionado no es un JSON válido.");
+      }
+    };
+    reader.readAsText(file);
+  });
+
+  document.body.appendChild(input);
+  input.click(); // abre el selector automáticamente
+  document.body.removeChild(input);
 };

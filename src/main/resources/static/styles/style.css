@@ -1,154 +1,159 @@
 h1 {
-    text-align: center;
-    font-family: 'Courier New', Courier, monospace;
-    font-weight: 900;
+  text-align: center;
+  font-family: "Courier New", Courier, monospace;
+  font-weight: 900;
 }
 
 h3 {
-    font-size: 18px;
-    font-family: 'Courier New', Courier, monospace;
-    text-align: center;
+  font-size: 18px;
+  font-family: "Courier New", Courier, monospace;
+  text-align: center;
 }
 
 .contenido {
-    width: auto;
-    display: grid;
-    grid-template-columns: repeat(3, 70px);
-    gap: 8px;
+  width: auto;
+  display: grid;
+  grid-template-columns: repeat(3, 70px);
+  gap: 8px;
 }
 
 .item {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 70px;
-    height: 70px;
-    background-color: rgb(33, 33, 34);
-    border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 70px;
+  height: 70px;
+  background-color: rgb(33, 33, 34);
+  border-radius: 8px;
 }
 
 .contenido-flex {
-    display: flex;
-    justify-content: center;
+  display: flex;
+  justify-content: center;
 }
 
 .item-flex {
-    width: 300px !important;
-    max-height: 620px;
-    margin-left: 4px;
-    padding: 4px;
-    background-color: rgb(33, 33, 34);
-    color: white;
-    border-radius: 8px;
-    overflow-y: auto;
+  width: 300px !important;
+  max-height: 620px;
+  margin-left: 4px;
+  padding: 4px;
+  background-color: rgb(33, 33, 34);
+  color: white;
+  border-radius: 8px;
+  overflow-y: auto;
+}
+
+.item-flex-lateral {
+  display: flex;
+  flex-direction: column;
 }
 
 .item-flex h4 {
-    text-align: center;
-    margin: 4px;
-    font-family: 'Courier New', Courier, monospace;
+  text-align: center;
+  margin: 4px;
+  font-family: "Courier New", Courier, monospace;
 }
 
 .acciones,
 .acciones-conf,
 .acciones-map {
-    display: grid;
-    grid-template-columns: repeat(4, 50px);
-    gap: 8px;
-    width: auto;
-    height: auto;
-    color: white;
-    border-radius: 8px;
+  display: grid;
+  grid-template-columns: repeat(4, 50px);
+  gap: 8px;
+  width: auto;
+  height: auto;
+  color: white;
+  border-radius: 8px;
 }
 
 .acciones-conf {
-    grid-template-columns: repeat(3, 50px);
+  grid-template-columns: repeat(3, 50px);
 }
 
 .acciones-map {
-    grid-template-columns: repeat(3, 100px);
-    align-items: center;
+  grid-template-columns: repeat(3, 100px);
+  align-items: center;
 }
 
 .btn-Acccion {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: rgb(52, 51, 122);
-    width: 50px;
-    height: 50px;
-    border-radius: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgb(52, 51, 122);
+  width: 50px;
+  height: 50px;
+  border-radius: 50px;
 }
 
 .btn-Acccion svg,
 a {
-    width: 20px;
-    height: 20px;
-    fill: white;
+  width: 20px;
+  height: 20px;
+  fill: white;
 }
 
-
 .contenido-flex-acciones {
-    margin-top: 16px;
-    padding: 10px 0;
-    display: flex;
-    justify-content: center;
+  margin-top: 16px;
+  padding: 10px 0;
+  display: flex;
+  justify-content: center;
 }
 
 .item-robot {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: rgb(61, 58, 223);
-    color: white;
-    width: 80%;
-    height: 80%;
-    border-radius: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgb(61, 58, 223);
+  color: white;
+  width: 80%;
+  height: 80%;
+  border-radius: 50px;
 }
 
 .icon-text {
-    display: flex;
-    margin: 4px;
+  display: flex;
+  margin: 4px;
 }
 
 .btn-acccion-text {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: rgb(52, 51, 122);
-    width: 50px;
-    height: 50px;
-    border-radius: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgb(52, 51, 122);
+  width: 50px;
+  height: 50px;
+  border-radius: 50px;
 }
 
 .btn-acccion-textsvg {
-    width: 20px;
-    height: 20px;
-    fill: white;
+  width: 20px;
+  height: 20px;
+  fill: white;
 }
 
 .button-ejec p {
-    margin: 0;
-    font-size: 12px;
-    text-align: center;
+  margin: 0;
+  font-size: 12px;
+  text-align: center;
 }
 
 .btnActionMap {
-    cursor: pointer;
-    background-color: rgb(114, 58, 49);
-    padding: 8px;
-    border-radius: 8px;
-    text-align: center;
+  cursor: pointer;
+  background-color: rgb(114, 58, 49);
+  padding: 8px;
+  border-radius: 8px;
+  text-align: center;
 }
 
-.listado-pistas{
-    cursor: pointer;
+.listado-pistas {
+  cursor: pointer;
+  height: 540px;
+  overflow-y: auto;
 }
 
-.select-item{
-    background: #333 !important;
+.select-item {
+  background: #333 !important;
 }
-
 
 .item-mapa-lateral {
   display: flex;
@@ -178,4 +183,45 @@ a {
 
 .btn-eliminar:hover {
   background: #f55;
+}
+
+.content-button {
+  display: flex;
+  justify-content: center;
+  padding: 8px;
+  gap: 10px;
+  margin-top: auto;
+}
+
+.btn-admin,
+.btn-close,.btn-perfil button {
+  background: linear-gradient(135deg, #3498db);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease;
+}
+
+.btn-admin{
+  display: none;
+}
+
+.btn-perfil{
+  width: 100%;
+  justify-items: end;
+}
+
+.col{
+  display: flex;
+  height: 100%;
+  align-items: end;
+}
+
+
+.btn-close {
+  background: linear-gradient(135deg, #e74c3c, #c0392b);
 }

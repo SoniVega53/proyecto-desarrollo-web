@@ -4,9 +4,12 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -83,28 +86,39 @@ public class MapaController {
     }
 
     @PostMapping("/{correo}")
-    public MapaEntity createMapa(@PathVariable String correo, @RequestBody MapaActualizarModel data) {
+    public ResponseEntity<?> createMapa(@PathVariable String correo, @RequestBody MapaActualizarModel data) {
         try {
-            UsuarioEntity usuario = usuarioRepository.findByCorreo(correo).get();
-            List<MapaDetalleModel> detalles = data.getDetalles();
-            if (usuario == null) {
-                return null;
+            Optional<UsuarioEntity> usuarioOpt = usuarioRepository.findByCorreo(correo);
+            if (usuarioOpt.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(Map.of("error", "Usuario no encontrado"));
             }
-            if (data.getMapa().getIdMapa() != null) {
-                List<MapaDetalleEntity> listadoPasos = mapaDetalleRepository
-                        .findByMapaIdMapa(data.getMapa().getIdMapa());
 
-                // elimina los pasos incesesarios y deja los que no elimino
-                for (MapaDetalleEntity item : listadoPasos) {
-                    mapaDetalleRepository.deleteById(item.getIdDetalle());
+            UsuarioEntity usuario = usuarioOpt.get();
+            MapaEntity mapaExistente = null;
+
+            if (data.getMapa().getIdMapa() != null) {
+                mapaExistente = mapaRepository.findById(data.getMapa().getIdMapa()).orElse(null);
+
+                if (mapaExistente != null) {
+                    List<MapaDetalleEntity> detallesAntiguos = mapaDetalleRepository
+                            .findByMapaIdMapa(mapaExistente.getIdMapa());
+
+                    mapaDetalleRepository.deleteAll(detallesAntiguos);
                 }
             }
 
-            MapaEntity newMapa = new MapaEntity(data.getMapa().getIdMapa(),usuario,data.getMapa().getNombreMapa(),LocalDateTime.now());
-            MapaEntity mapa = mapaRepository.save(newMapa);
+            Long idMapa = mapaExistente != null ? mapaExistente.getIdMapa() : null;
+            MapaEntity nuevoMapa = new MapaEntity(
+                    idMapa,
+                    usuario,
+                    data.getMapa().getNombreMapa(),
+                    LocalDateTime.now());
 
-            for (MapaDetalleModel item : detalles) {
-                MapaDetalleEntity entity = new MapaDetalleEntity(
+            MapaEntity mapaGuardado = mapaRepository.save(nuevoMapa);
+
+            for (MapaDetalleModel item : data.getDetalles()) {
+                MapaDetalleEntity detalle = new MapaDetalleEntity(
                         null,
                         item.getKey(),
                         item.getValue(),
@@ -112,15 +126,18 @@ public class MapaController {
                         item.getValueMain(),
                         item.getEstatus(),
                         item.isStart(),
-                        mapa);
-                // item.setMapa(mapa);
-                mapaDetalleRepository.save(entity);
+                        mapaGuardado);
+                mapaDetalleRepository.save(detalle);
             }
 
-            return mapa;
+            return ResponseEntity
+                    .status(idMapa == null ? HttpStatus.CREATED : HttpStatus.OK)
+                    .body(mapaGuardado);
 
         } catch (Exception e) {
-            return null;
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", e.getMessage()));
         }
     }
 

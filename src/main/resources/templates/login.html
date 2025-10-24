@@ -51,6 +51,7 @@
       async function validarToken() {
         const token = localStorage.getItem("token");
 
+        console.log(token)
         if (!token) {
           console.log("No hay token guardado");
           return false;
@@ -68,6 +69,7 @@
 
           if (!response.ok) {
             const error = await response.text();
+            localStorage.removeItem("token");
             console.log(error);
             return false;
           }
@@ -76,6 +78,7 @@
           console.log(data); // "Token válido"
           return true;
         } catch (err) {
+          localStorage.removeItem("token");
           console.error("Error al validar token:", err);
           return false;
         }

@@ -24,4 +24,8 @@ public class PageController {
     public String login() {
         return "login";
     }
+    @GetMapping("/perfil")
+    public String perfil() {
+        return "perfil";
+    }
 }

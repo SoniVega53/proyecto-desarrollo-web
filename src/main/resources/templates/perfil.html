@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Perfil de Usuario</title>
+    <link th:href="@{/styles/administrador.css}" rel="stylesheet" />
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+        background-color: #f4f4f4;
+      }
+      .perfil-container {
+        max-width: 400px;
+        margin: 0 auto;
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      }
+      .perfil-header {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+      .perfil-header h1 {
+        margin: 0;
+      }
+      .perfil-info p {
+        margin: 8px 0;
+        font-size: 16px;
+      }
+      .perfil-buttons {
+        text-align: center;
+        margin-top: 20px;
+      }
+      .perfil-buttons button {
+        padding: 8px 14px;
+        margin: 0 5px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      .btn-edit {
+        background-color: #22577a;
+        color: white;
+      }
+      .btn-logout {
+        background-color: #c0392b;
+        color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="perfil-container">
+      <div
+        class="perfil-header"
+        style="
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+        "
+      >
+        <button
+          onclick="history.back()"
+          style="
+            background-color: #2c2929;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 0 !important;
+          "
+        >
+          Atras
+        </button>
+        <div style="flex: 1;">
+          <h1 style="margin: 0">Perfil de Usuario</h1>
+          <p id="mensaje-bienvenida" style="margin: 0">Bienvenido</p>
+        </div>
+      </div>
+      <div class="perfil-info">
+        <p><strong>Nombre:</strong> <span id="perfil-nombre"></span></p>
+        <p><strong>Correo:</strong> <span id="perfil-correo"></span></p>
+        <p><strong>Rol:</strong> <span id="perfil-rol"></span></p>
+      </div>
+      <div class="perfil-buttons">
+        <button class="btn-edit" onclick="actualizarPassword()">
+          Actualizar Contraseña
+        </button>
+        <button class="btn-logout" onclick="onClickLoggout()">
+          Cerrar Sesión
+        </button>
+      </div>
+    </div>
+
+    <!-- Modal existente -->
+    <div id="passwordModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">Actualizar Contraseña</div>
+        <div class="modal-body">
+          <input
+            type="password"
+            id="passwordOld"
+            placeholder="Contraseña actual"
+            required
+          />
+          <input
+            type="password"
+            id="passwordChange"
+            placeholder="Nueva contraseña"
+            required
+          />
+          <div id="responseMessage" style="color: red; font-size: 14px"></div>
+        </div>
+        <div class="modal-footer">
+          <button
+            class="cancel-btn"
+            id="closeModalBtn"
+            onclick="closeModalBtn()"
+          >
+            Cancelar
+          </button>
+          <button class="update-btn" id="updatePasswordBtn">Actualizar</button>
+        </div>
+      </div>
+    </div>
+
+    <script th:src="@{/script/perfil.js}"></script>
+  </body>
+</html>

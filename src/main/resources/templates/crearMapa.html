@@ -8,7 +8,8 @@
     <style>
       .detalle-mapa {
         display: flex;
-        justify-content: center;
+        justify-content: space-between;
+        flex: content;
         margin-bottom: 8px;
       }
       h4 {
@@ -16,9 +17,15 @@
       }
 
       .button-ejec {
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        display: inline-block;
+        position: absolute;
+        top: 8px;
+        left: 8px;
+        z-index: 999;
+      }
+
+      .contenido-flex-acciones {
+        height: 100%;
       }
       h1 {
         text-align: center;
@@ -28,56 +35,52 @@
 
   <body>
     <h1 id="id-title"></h1>
-    <!-- resto de tu contenido... -->
-    <div style="display: flex; justify-content: flex-end; padding: 8px">
-      <button
-        onclick="onClickLoggout()"
-        style="
-          background-color: #c0392b;
-          color: white;
-          border: none;
-          padding: 6px 12px;
-          border-radius: 4px;
-          cursor: pointer;
-        "
-      >
-        Cerrar sesión
-      </button>
-    </div>
-    <div
-      style="display: flex; justify-content: flex-end; padding: 8px"
-      id="btn-admin"
-    >
-      <div>
-        <a href="/admin" style="background-color: rgb(67, 72, 87)">
-          <button
-            style="
-              background-color: #205368;
-              color: white;
-              border: none;
-              padding: 6px 12px;
-              border-radius: 4px;
-              cursor: pointer;
-            "
-          >
-            Administración
-          </button>
-        </a>
-      </div>
-    </div>
+
     <h3>De click izquierdo sobre los cuadros que conformarán la pista</h3>
 
-    <div class="detalle-mapa">
+    <div class="contenido-flex">
       <div>
-        <h4 id="titulo-tipo">Agregar Nuevo</h4>
-        <input type="text" placeholder="Ingresa nombre mapa" id="input-tipo" />
+        <div class="detalle-mapa">
+          <div style="width: 460px">
+            <h4 id="titulo-tipo">Agregar Nuevo</h4>
+            <input
+              type="text"
+              placeholder="Ingresa nombre mapa"
+              id="input-tipo"
+            />
+          </div>
+
+          <div class="btn-perfil" style="width: 308px">
+            <div class="col">
+              <button onclick="window.location.href='/perfil'">Perfil</button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
     <div class="contenido-flex">
       <div>
         <div id="grid-main" class="contenido"></div>
-        <div style="background-color: rgb(18, 19, 18); border-radius: 8px">
+        <div
+          style="
+            height: 148px;
+            background-color: rgb(18, 19, 18);
+            border-radius: 8px;
+            position: relative;
+          "
+        >
+          <div class="button-ejec">
+            <div class="btn-Acccion">
+              <a href="/" style="background-color: rgb(67, 72, 87)">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                  <path
+                    d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm115.7 272l-176 101c-15.8 8.8-35.7-2.5-35.7-21V152c0-18.4 19.8-29.8 35.7-21l176 107c16.4 9.2 16.4 32.9 0 42z"
+                  />
+                </svg>
+              </a>
+            </div>
+          </div>
           <div class="contenido-flex-acciones">
             <div class="acciones-map contenido contenido-flex">
               <!-- <div class="btn-Acccion-"><a href="index.html">PROBAR</a></div> -->
@@ -93,45 +96,48 @@
               <div class="btnActionMap" onclick="limpiar(true)">Limpiar</div>
               <div>
                 <div
+                  onclick="cargar()"
                   class="btnActionMap"
                   style="margin-bottom: 4px; background-color: rgb(45, 72, 122)"
                 >
                   Cargar
                 </div>
                 <div
+                  onclick="exportar()"
                   class="btnActionMap"
                   style="background-color: rgb(73, 146, 64); margin-bottom: 4px"
                 >
                   Exportar
-                </div>
-                <div class="button-ejec">
-                  <div class="btn-Acccion">
-                    <a href="/" style="background-color: rgb(67, 72, 87)">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 512 512"
-                      >
-                        <path
-                          d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm115.7 272l-176 101c-15.8 8.8-35.7-2.5-35.7-21V152c0-18.4 19.8-29.8 35.7-21l176 107c16.4 9.2 16.4 32.9 0 42z"
-                        />
-                      </svg>
-                    </a>
-                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
+      <!-- Menu lateral -->
       <div class="item-flex">
         <h4>Pistas Guardadas</h4>
         <div>
           <div class="listado-pistas" id="idData-game"></div>
         </div>
+
+        <!-- Botones al final -->
+        <div class="content-button">
+          <button
+            class="btn-admin"
+            onclick="window.location.href='/admin'"
+            id="btn-admin"
+          >
+            Administración
+          </button>
+
+          <button class="btn-close" onclick="onClickLoggout()">
+            Cerrar sesión
+          </button>
+        </div>
       </div>
     </div>
 
-    <script th:src="@{/script/data.js}"></script>
     <script th:src="@{/script/creacionMapa.js}"></script>
   </body>
 </html>

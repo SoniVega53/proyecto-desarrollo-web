@@ -46,13 +46,69 @@ buscarMapas();
 
 async function buscarMapas() {
   const res = await fetch(`/api/auth/aletorioMapa`);
-  if (!res.ok) throw new Error("Mapas no encontrados");
-
+  if (!res.ok) {
+    generadorMapaEmpty();
+    throw new Error("Mapas no encontrados");
+  }
   const camino = await res.json();
 
   caminoArray = camino;
   console.log(camino);
   init();
+}
+
+function generadorMapaEmpty() {
+  for (let index = 0; index < itemsArray.length; index++) {
+    let element =
+      index === 0 ? "START" : index === itemsArray.length - 1 ? "END" : "";
+
+    for (let indexFila = 0; indexFila < itemsArray.length; indexFila++) {
+      const item = {
+        key: itemsAddArray.length + 1,
+        value: indexFila,
+        tipo: "",
+        valueMain: index,
+        estatus: -1,
+      };
+
+      // Determinar tipo según posición
+      if (indexFila === 0) {
+        item.tipo =
+          element === "START"
+            ? Position.TOP_LEFT
+            : element === "END"
+            ? Position.BOTTOM_LEFT
+            : Position.LEFT;
+      } else if (indexFila === itemsArray.length - 1) {
+        item.tipo =
+          element === "START"
+            ? Position.TOP_RIGHT
+            : element === "END"
+            ? Position.BOTTOM_RIGHT
+            : Position.RIGHT;
+      } else {
+        item.tipo =
+          index === 0
+            ? Position.TOP
+            : index === itemsArray.length - 1
+            ? Position.BOTTOM
+            : Position.CENTER;
+      }
+
+      itemsAddArray.push(item);
+    }
+  }
+  const grid = document.getElementById("grid-main-game");
+  grid.style.gridTemplateColumns = `repeat(${itemsArray.length}, 70px)`;
+
+  itemsAddArray.map((res, index) => {
+    const nuevoDiv = document.createElement("div");
+    nuevoDiv.classList.add("item");
+    nuevoDiv.id = `item-${res.key}`;
+    nuevoDiv.style.backgroundColor = "rgb(18, 19, 18)";
+
+    grid.appendChild(nuevoDiv);
+  });
 }
 
 async function init() {
@@ -96,7 +152,6 @@ async function init() {
       itemsAddArray.push(item);
     }
   }
-
   const grid = document.getElementById("grid-main-game");
   grid.style.gridTemplateColumns = `repeat(${itemsArray.length}, 70px)`;
 
